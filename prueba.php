@@ -24,79 +24,88 @@
 <script src="libs/js8/cleditor/jquery.cleditor.min.js" type="text/javascript"></script>
 <script src="libs/js8/datetimepicker/jquery.datetimepicker.js" type="text/javascript"></script>-->
 <script type="text/javascript">
+var pruebaDescarga 
+var pruebaDesc1;
 	$(document).ready(function(){
-		var pruebaDescarga = downQuery;
+		pruebaDescarga = downQuery;
 		var opciones = new Object();
 		opciones.onCompletado = solicitudCompletada2;
 		opciones.onSend = antesEnvioSolicitud2;
 		opciones.onExito = exitoSolicitud2;
 		opciones.onProgreso = muestraProgreso2;
-		pruebaDescarga.dArchivo("31122010.pdf",opciones);
+		opciones.id="1";
+		opciones.tipoResultado="binary";
+		pruebaDescarga.dArchivo("http://pruebas.uanesi.net/descargaArchivo.php?archivo=APA.pdf",opciones);
+		
+		var opciones = new Object();
+		opciones.onCompletado = solicitudCompletada2;
+		opciones.onSend = antesEnvioSolicitud2;
+		opciones.onExito = exitoSolicitud2;
+		opciones.onProgreso = muestraProgreso2;
+		opciones.tipoResultado="binary";
+		opciones.id="2";
+		pruebaDesc1 = pruebaDescarga.dArchivo("http://pruebas.uanesi.net/pdf1115099130576dfc45a7f4a-1.jpg",opciones);
 	})
-	function muestraProgreso2(evt){
+	function muestraProgreso2(evt,xhr){
+			$("#progresoTXT"+xhr.opciones.id).html(xhr.opciones.url);
+			$("#progresoTXT"+xhr.opciones.id+"A").html(evt.lengthComputable+"<br>");
 			if (evt.lengthComputable) {
 				var percentComplete = evt.loaded / evt.total;
-				$("#progresoTXT").append(percentComplete+"<br>");
-				/*if(muestraBarra){
-					$("#"+barraProgreso).css("display","block");
-					$("#"+barraProgreso).data('progress').set(Math.round(percentComplete * 100));
-				}
-				if($("#"+dialogoProgresoTXT)){
-					$("#"+dialogoProgresoTXT).html('<hs>'+Math.round(percentComplete * 100) + "%"+' Cargado<br>'+formatSize (evt.loaded) +' de '+ formatSize (evt.total)+'</hs>');
-				}*/
-				//alert(Math.round(percentComplete * 100) + "%");
+				$("#progresoTXT"+xhr.opciones.id).html(percentComplete+"<br>");
 			}else{
-				$("#progresoTXT").append("Progreso solo<br>");
-				/*if(muestraBarra){
-					$("#"+barraProgreso).css("display","none");
-				}
-				if($("#"+dialogoProgresoTXT)){
-					$("#"+dialogoProgresoTXT).html('<h2>Descargando</h2>');
-				}*/
+				$("#progresoTXT"+xhr.opciones.id+"A").html("Progreso solo<br>");
 			}
 		}
-		function errorSolicitud2(xhr, ajaxOptions, thrownError) {
-			/*alert("Error al generar la vista previa");
-			alert(xhr.responseText);
-			alert(thrownError);
-			var dialogAlerta = $("#"+dialogoProgreso).data('dialog');
-			$("#"+dialogoProgresoTXT).html('<h4 class="fg-white">&nbsp;SE PRESENTÓ UN ERROR A GENERAR LA SOLICITUD&nbsp;</h4><br>Error presentado: '+thrownError);
-			dialogAlerta.open();*/
-			$("#progresoTXT").append("Error al generar la vista previa 2");
-			$("#progresoTXT").append("<br>");
-			$("#progresoTXT").append(xhr.responseText);
-			$("#progresoTXT").append("<br>");
-			$("#progresoTXT").append(thrownError);
-			$("#progresoTXT").append("<br>");
+		function errorSolicitud2(xhr, ajaxOptions, errorArrojado) {
+			$("#progresoTXT"+xhr.opciones.id).append("Error al generar la vista previa 2");
+			$("#progresoTXT"+xhr.opciones.id).append("<br>");
+			$("#progresoTXT"+xhr.opciones.id).append(xhr.responseText);
+			$("#progresoTXT"+xhr.opciones.id).append("<br>");
+			$("#progresoTXT"+xhr.opciones.id).append(errorArrojado);
+			$("#progresoTXT"+xhr.opciones.id).append("<br>");
 			
 		}
-		function antesEnvioSolicitud2() {
-			//$("#"+barraProgreso).css("display","none");
-			//$("#"+dialogoProgresoTXT).html('<h2>Descargando</h2>');
-			$("#progresoTXT").append("antesEnvioSolicitud 2<br>");
+		function antesEnvioSolicitud2(evt,opciones) {
+			console.log("antesEnvioSolicitud")
+			console.log(opciones.id);
+			$("#progresoTXTTest").html("antesEnvioSolicitud")
 		}
-		function solicitudCompletada2() {
-			//$("#"+dialogoProgresoTXT).html('<h2>Descarga completada</h2>');
-			//dialog.close();
-			$("#progresoTXT").append("solicitudCompletada 2<br>");
+		function solicitudCompletada2(evt,state) {
+			console.log("solicitudCompletada");
+			console.log(evt.opciones.id)
+			$("#progresoTXTTest").html("solicitudCompletada");
 		}
 		function exitoSolicitud2(data, status, xhr) { 
-			/*$("#"+dialogoProgresoTXT).html('<h2>Procesando descarga</h2>');
 			if(data){
-				var nombreArchivo = obtieneNombre(xhr);
+				$("#progresoTXT"+xhr.opciones.id+"B").append("Objetivo: " + xhr.opciones.url + "<br>");
+				var nombreArchivo = pruebaDescarga.obtieneNombre(xhr);
+				$("#progresoTXT"+xhr.opciones.id+"B").append("Archivo: " + nombreArchivo + "<br>");
 				var downloadUrl = URL.createObjectURL(data);
-				var a = document.createElement("a");
-				a.href = downloadUrl;
-				a.download = nombreArchivo;
-				document.body.appendChild(a);
-				a.click();
-			}*/
-			$("#progresoTXT").append("exitoSolicitud 2<br>");
+				if(xhr.opciones.id=="1"){
+					var a = document.createElement("a");
+					a.href = downloadUrl;
+					a.download = nombreArchivo;
+					document.body.appendChild(a);
+					a.click();
+				}else{
+					var a = document.createElement("img");
+					a.src = downloadUrl;
+					document.body.appendChild(a);
+				}
+			}
+			$("#progresoTXT"+xhr.opciones.id+"B").append("exitoSolicitud 2<br>");
 		}
 </script>
 </head>
 
 <body>
-<div id="progresoTXT"></div>
+<div id="progresoTXTTest" style="border:#000000 1px solid"></div>
+<div id="progresoTXT1" style="border:#000000 1px solid"></div>
+<div id="progresoTXT1A"></div>
+<div id="progresoTXT1B"></div>
+<div id="progresoTXT2" style="border:#000000 1px solid"></div>
+<div id="progresoTXT2A"></div>
+<div id="progresoTXT2B"></div>
+
 </body>
 </html>

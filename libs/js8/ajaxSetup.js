@@ -1,5 +1,5 @@
 /*!
- Downloader Jquery Progress v0.1
+ Downloader Jquery Progress v1.0
  http://uanesi.net/Downloader
  requires jQuery v1.9.1 or later
 
@@ -8,11 +8,9 @@
 
 (function ($) {
 		$.ajaxTransport("+binary", function(options, originalOptions, jqXHR){
-			// check for conditions and support for blob / arraybuffer response type
 			if (window.FormData && ((options.dataType && (options.dataType == 'binary')) || (options.data && ((window.ArrayBuffer && options.data instanceof ArrayBuffer) || (window.Blob && options.data instanceof Blob)))))
 			{
 				return {
-					// create new XMLHttpRequest
 					send: function(headers, callback){
 						// setup all variables
 						var xhr = new XMLHttpRequest(),
@@ -20,48 +18,30 @@
 						url = options.url,
 						type = options.type,
 						async = options.async || true,
-						// blob or arraybuffer. Default is blob
 						dataType = options.responseType || "blob",
 						data = options.data || null,
 						username = options.username || null,
 						password = options.password || null;
-						//console.log(originalOptions.onProgreso);
-						if(originalOptions.onProgreso){
-							xhr.addEventListener("progress", originalOptions.onProgreso,false);
-						}else{
-							xhr.addEventListener("progress", function (evt) {
-								//alert(evt.lengthComputable);
-								/*if (evt.lengthComputable) {
-									var percentComplete = evt.loaded / evt.total;
-									if(muestraBarra){
-										$("#"+barraProgreso).css("display","block");
-										$("#"+barraProgreso).data('progress').set(Math.round(percentComplete * 100));
-									}
-									if($("#"+dialogoProgresoTXT)){
-										$("#"+dialogoProgresoTXT).html('<hs>'+Math.round(percentComplete * 100) + "%"+' Cargado<br>'+formatSize (evt.loaded) +' de '+ formatSize (evt.total)+'</hs>');
-									}//alert(Math.round(percentComplete * 100) + "%");
-								}else{
-									if(muestraBarra){
-										$("#"+barraProgreso).css("display","none");
-									}
-									if($("#"+dialogoProgresoTXT)){
-										$("#"+dialogoProgresoTXT).html('<h2>Descargando</h2>');
-									}
-								}*/
-							}, false);
-						}
+						jqXHR.opciones = options;
+						
+						xhr.addEventListener("progress", function (evt) {
+							if(jqXHR.opciones.onProgreso){
+								jqXHR.opciones.onProgreso(evt,jqXHR);
+							}
+						}, false);
 						xhr.addEventListener('error', function(jqXHR, textStatus, errorThrown){
-							console.log("Se presento un error");
-							console.log(jqXHR);
+							if(jqXHR.opciones.onError){
+								jqXHR.opciones.onError(jqXHR, textStatus, errorThrown);
+							}
 						});
 						xhr.addEventListener('load', function(){
 							var data = {};
+							
+							
 							data[options.dataType] = xhr.response;
-							// make callback and send data
 							callback(xhr.status, xhr.statusText, data, xhr.getAllResponseHeaders());
 						});
 						xhr.open(type, url, async, username, password);
-						// setup custom headers
 						for (var i in headers ) {
 							xhr.setRequestHeader(i, headers[i] );
 						}
@@ -88,7 +68,7 @@
 					abort: function(){
 						jqXHR.abort();
 						//this.abort();
-						console.log("Debe Abortar");
+						alert("Debe Abortar");
 						return true;
 					}
 				};
@@ -121,7 +101,7 @@
 			return size + " " + 'b';
 		},
 		obtieneNombre:function(xhr){
-			console.log(xhr.getAllResponseHeaders())
+			$("#progresoTXT3").html(xhr.getAllResponseHeaders())
 			//var encabezados = xhr.getAllResponseHeaders();
 			if(xhr.getResponseHeader("Content-Disposition")){
 				var nombreArchivo = xhr.getResponseHeader("Content-Disposition").replace('attachment','');
@@ -132,8 +112,16 @@
 				nombreArchivo = nombreArchivo.replace('=','');
 				nombreArchivo = nombreArchivo.replace('"','');
 				nombreArchivo = nombreArchivo.replace('"','');
-			}else{
-				var nombreArchivo = "archivo";
+			}
+			if(!nombreArchivo){
+				//var nombreArchivo = "archivo";
+				var nombreArchivo = xhr.opciones.url.split("?");
+				nombreArchivo = nombreArchivo[0].split("/");
+				if(nombreArchivo.length > 1){
+					nombreArchivo = nombreArchivo[nombreArchivo.length-1];
+				}else{
+					nombreArchivo = nombreArchivo[0];
+				}
 			}
 			return 	nombreArchivo;
 		},
@@ -180,55 +168,33 @@
 				complete: opciones.onCompletado,
 				success: opciones.onExito,
 				crossDomain: opciones.crossD,
-				onProgreso:opciones.onProgreso
+				onProgreso:opciones.onProgreso,
+				id:opciones.id
 			})
 			return cargadorPagina;
 		},
 		muestraProgreso:function(evt){
 			if (evt.lengthComputable) {
 				var percentComplete = evt.loaded / evt.total;
-				alert(percentComplete);
-				/*if(muestraBarra){
-					$("#"+barraProgreso).css("display","block");
-					$("#"+barraProgreso).data('progress').set(Math.round(percentComplete * 100));
-				}
-				if($("#"+dialogoProgresoTXT)){
-					$("#"+dialogoProgresoTXT).html('<hs>'+Math.round(percentComplete * 100) + "%"+' Cargado<br>'+formatSize (evt.loaded) +' de '+ formatSize (evt.total)+'</hs>');
-				}*/
-				//alert(Math.round(percentComplete * 100) + "%");
+				console.log(percentComplete);
 			}else{
-				/*if(muestraBarra){
-					$("#"+barraProgreso).css("display","none");
-				}
-				if($("#"+dialogoProgresoTXT)){
-					$("#"+dialogoProgresoTXT).html('<h2>Descargando</h2>');
-				}*/
+				console.log("Muestra progreso sin avance");
 			}
 		},
-		errorSolicitud:function(xhr, ajaxOptions, thrownError) {
-			/*alert("Error al generar la vista previa");
-			alert(xhr.responseText);
-			alert(thrownError);
-			var dialogAlerta = $("#"+dialogoProgreso).data('dialog');
-			$("#"+dialogoProgresoTXT).html('<h4 class="fg-white">&nbsp;SE PRESENTÓ UN ERROR A GENERAR LA SOLICITUD&nbsp;</h4><br>Error presentado: '+thrownError);
-			dialogAlerta.open();*/
-			alert("Error al generar la vista previa");
-			alert(xhr.responseText);
-			alert(thrownError);
+		errorSolicitud:function(xhr, opcionesAjax, errorArrojado) {
+			console.log("Error al generar la vista previa");
+			console.log(xhr.responseText);
+			console.log(errorArrojado);
 			
 		},
-		antesEnvioSolicitud:function() {
-			//$("#"+barraProgreso).css("display","none");
-			//$("#"+dialogoProgresoTXT).html('<h2>Descargando</h2>');
-			alert("antesEnvioSolicitud");
+		antesEnvioSolicitud:function(evt,opciones) {
+			console.log("antesEnvioSolicitud");
 		},
-		solicitudCompletada:function() {
-			//$("#"+dialogoProgresoTXT).html('<h2>Descarga completada</h2>');
-			//dialog.close();
-			alert("solicitudCompletada");
+		solicitudCompletada:function(evt,estado) {
+			console.log("solicitudCompletada");
 		},
-		exitoSolicitud:function(data, status, xhr) { 
-			/*$("#"+dialogoProgresoTXT).html('<h2>Procesando descarga</h2>');
+		exitoSolicitud:function(data, estado, xhr) { 
+			/*
 			if(data){
 				var nombreArchivo = obtieneNombre(xhr);
 				var downloadUrl = URL.createObjectURL(data);
@@ -238,7 +204,7 @@
 				document.body.appendChild(a);
 				a.click();
 			}*/
-			alert("exitoSolicitud");
+			console.log("exitoSolicitud");
 		}
    }
 })(jQuery);
