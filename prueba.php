@@ -12,10 +12,10 @@
 <link href="libs/css8/datetimepicker/jquery.datetimepicker.css" rel="stylesheet">-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script> window.jQuery || document.write('<script src="libs/js8/jquery-1.9.1.min.js"><\/script>') </script>
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-<script> window.jQuery.ui || document.write('<script src="libs/js8/jquery-ui-1.10.4.custom.min.js"><\/script>') </script>
 <script src="libs/js8/ajaxSetup.js" type="text/javascript"></script>
-<!--<script src="libs/js8/select2/js/select2.min.js" type="text/javascript"></script>
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+<script> window.jQuery.ui || document.write('<script src="libs/js8/jquery-ui-1.10.4.custom.min.js"><\/script>') </script>
+<script src="libs/js8/select2/js/select2.min.js" type="text/javascript"></script>
 <script src="libs/js8/min.metroBeta2.js"></script>
 <script src="libs/js8/paramBas.js"></script>
 <script src="libs/js8/include.js" language="javascript"></script>
@@ -25,9 +25,11 @@
 <script src="libs/js8/datetimepicker/jquery.datetimepicker.js" type="text/javascript"></script>-->
 <script type="text/javascript">
 var pruebaDescarga 
-var pruebaDesc1;
 	$(document).ready(function(){
-		pruebaDescarga = downQuery;
+		$("#botonInicio").click(iniciaDescarga);
+	})
+  function iniciaDescarga(){
+    pruebaDescarga = downQuery;
 		var opciones = new Object();
 		opciones.onCompletado = solicitudCompletada2;
 		opciones.onSend = antesEnvioSolicitud2;
@@ -44,8 +46,8 @@ var pruebaDesc1;
 		opciones.onProgreso = muestraProgreso2;
 		opciones.tipoResultado="binary";
 		opciones.id="2";
-		pruebaDesc1 = pruebaDescarga.dArchivo("http://pruebas.uanesi.net/pdf1115099130576dfc45a7f4a-1.jpg",opciones);
-	})
+		pruebaDescarga.dArchivo("http://pruebas.uanesi.net/pdf1115099130576dfc45a7f4a-1.jpg",opciones);
+  }
 	function muestraProgreso2(evt,xhr){
 			$("#progresoTXT"+xhr.opciones.id).html(xhr.opciones.url);
 			$("#progresoTXT"+xhr.opciones.id+"A").html(evt.lengthComputable+"<br>");
@@ -98,7 +100,11 @@ var pruebaDesc1;
 </script>
 </head>
 
-<body>
+<body style="text-align:center">
+<input type="button" id="botonInicio" name="botonInicio" value="Iniciar descarga">
+<br>
+<br>
+<br>
 <div id="progresoTXTTest" style="border:#000000 1px solid"></div>
 <div id="progresoTXT1" style="border:#000000 1px solid"></div>
 <div id="progresoTXT1A"></div>
@@ -106,6 +112,5 @@ var pruebaDesc1;
 <div id="progresoTXT2" style="border:#000000 1px solid"></div>
 <div id="progresoTXT2A"></div>
 <div id="progresoTXT2B"></div>
-
 </body>
 </html>
