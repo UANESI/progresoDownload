@@ -16,7 +16,7 @@
 					send: function(headers, callback){
 						// setup all variables
 						var xhr = new XMLHttpRequest(),
-						onFinal = options.funcionFinal	,
+						onFinal = options.funcionFinal,
 						url = options.url,
 						type = options.type,
 						async = options.async || true,
@@ -168,9 +168,6 @@
 			if(!opciones.crossD){
 				opciones.crossD = false;
 			}
-			if(dialog){
-				dialog.open();
-			}
 			var cargadorPagina = $.ajax({
 				processData: false,
 				url: objetivo,
@@ -190,7 +187,7 @@
 		muestraProgreso:function(evt){
 			if (evt.lengthComputable) {
 				var percentComplete = evt.loaded / evt.total;
-				console.log(percentComplete);
+				alert(percentComplete);
 				/*if(muestraBarra){
 					$("#"+barraProgreso).css("display","block");
 					$("#"+barraProgreso).data('progress').set(Math.round(percentComplete * 100));
@@ -215,20 +212,20 @@
 			var dialogAlerta = $("#"+dialogoProgreso).data('dialog');
 			$("#"+dialogoProgresoTXT).html('<h4 class="fg-white">&nbsp;SE PRESENTÓ UN ERROR A GENERAR LA SOLICITUD&nbsp;</h4><br>Error presentado: '+thrownError);
 			dialogAlerta.open();*/
-			console.log("Error al generar la vista previa");
-			console.log(xhr.responseText);
-			console.log(thrownError);
+			alert("Error al generar la vista previa");
+			alert(xhr.responseText);
+			alert(thrownError);
 			
 		},
 		antesEnvioSolicitud:function() {
 			//$("#"+barraProgreso).css("display","none");
 			//$("#"+dialogoProgresoTXT).html('<h2>Descargando</h2>');
-			console.log("antesEnvioSolicitud");
+			alert("antesEnvioSolicitud");
 		},
 		solicitudCompletada:function() {
 			//$("#"+dialogoProgresoTXT).html('<h2>Descarga completada</h2>');
 			//dialog.close();
-			console.log("solicitudCompletada");
+			alert("solicitudCompletada");
 		},
 		exitoSolicitud:function(data, status, xhr) { 
 			/*$("#"+dialogoProgresoTXT).html('<h2>Procesando descarga</h2>');
@@ -241,7 +238,7 @@
 				document.body.appendChild(a);
 				a.click();
 			}*/
-			console.log("exitoSolicitud");
+			alert("exitoSolicitud");
 		}
    }
 })(jQuery);
