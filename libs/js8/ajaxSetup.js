@@ -18,7 +18,7 @@
 						url = options.url,
 						type = options.type,
 						async = options.async || true,
-						dataType = options.responseType || "blob",
+						dataType = options.responseType,
 						data = options.data || null,
 						username = options.username || null,
 						password = options.password || null;
@@ -36,8 +36,6 @@
 						});
 						xhr.addEventListener('load', function(){
 							var data = {};
-							
-							
 							data[options.dataType] = xhr.response;
 							callback(xhr.status, xhr.statusText, data, xhr.getAllResponseHeaders());
 						});
@@ -73,6 +71,68 @@
 					}
 				};
 			}
+		});
+		$.ajaxTransport("text", function(options, originalOptions, jqXHR){
+			return {
+				send: function(headers, callback){
+					// setup all variables
+					var xhr = new XMLHttpRequest(),
+					onFinal = options.funcionFinal,
+					url = options.url,
+					type = options.type,
+					async = options.async || true,
+					dataType = options.responseType || "text",
+					data = options.data || null,
+					username = options.username || null,
+					password = options.password || null;
+					jqXHR.opciones = options;
+					
+					xhr.addEventListener("progress", function (evt) {
+						if(jqXHR.opciones.onProgreso){
+							jqXHR.opciones.onProgreso(evt,jqXHR);
+						}
+					}, false);
+					xhr.addEventListener('error', function(jqXHR, textStatus, errorThrown){
+						if(jqXHR.opciones.onError){
+							jqXHR.opciones.onError(jqXHR, textStatus, errorThrown);
+						}
+					});
+					xhr.addEventListener('load', function(){
+						var data = {};
+						data[options.dataType] = xhr.response;
+						callback(xhr.status, xhr.statusText, data, xhr.getAllResponseHeaders());
+					});
+					xhr.open(type, url, async, username, password);
+					for (var i in headers ) {
+						xhr.setRequestHeader(i, headers[i] );
+					}
+					if(data){
+						if($.isArray(data)){
+							var datosNuevos = new Array();
+							for (var i in data) {
+								if(typeof data[i] == "string"){
+									 datosNuevos.push(i + '=' + encodeURI(data[i]) );
+								}
+							}
+							data = datosNuevos.join("&");
+						}else if(typeof data == "object"){
+							var datosNuevos = new Array();
+							$.each( data, function( key, value ) {
+							  datosNuevos.push(key + "=" + encodeURI(value));
+							});
+							data = datosNuevos.join("&");
+						}
+					}
+					xhr.responseType = dataType;
+					xhr.send(data);
+				},
+				abort: function(){
+					jqXHR.abort();
+					//this.abort();
+					alert("Debe Abortar");
+					return true;
+				}
+			};
 		}); 
    downQuery =  {
 	   defaultOptions:{

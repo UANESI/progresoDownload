@@ -23,7 +23,10 @@ var pruebaDescarga
 		opciones.onProgreso = muestraProgreso2;
 		opciones.id="1";
 		opciones.tipoResultado="binary";
-		pruebaDescarga.dArchivo("http://pruebas.uanesi.net/descargaArchivo.php?archivo=APA.pdf",opciones);
+		var datos = new Object();
+		datos.archivo="APA.pdf";
+		opciones.metodo = "POST";
+		pruebaDescarga.dArchivo("http://pruebas.uanesi.net/descargaArchivoPOST.php",opciones);
 		
 		var opciones = new Object();
 		opciones.onCompletado = solicitudCompletada2;
@@ -32,10 +35,11 @@ var pruebaDescarga
 		opciones.onProgreso = muestraProgreso2;
 		opciones.tipoResultado="binary";
 		opciones.id="2";
-		pruebaDescarga.dArchivo("http://pruebas.uanesi.net/pdf1115099130576dfc45a7f4a-1.jpg",opciones);
+		opciones.metodo = "GET";
+		pruebaDescarga.dArchivo("http://pruebas.uanesi.net/descargaArchivoGET.php?archivo=APA.pdf",opciones);
   }
 	function muestraProgreso2(evt,xhr){
-			//$("#progresoTXT"+xhr.opciones.id).html(xhr.opciones.url);
+			$("#progresoTXT"+xhr.opciones.id).html(xhr.opciones.url);
 			$("#progresoTXT"+xhr.opciones.id+"A").html(evt.lengthComputable+"<br>");
 			if (evt.lengthComputable) {
 				var percentComplete = evt.loaded / evt.total;

@@ -16,27 +16,19 @@ var pruebaDescarga
 	})
   function iniciaDescarga(){
     pruebaDescarga = downQuery;
-		var opciones = new Object();
-		opciones.onCompletado = solicitudCompletada2;
-		opciones.onSend = antesEnvioSolicitud2;
-		opciones.onExito = exitoSolicitud2;
-		opciones.onProgreso = muestraProgreso2;
-		opciones.id="1";
-		opciones.tipoResultado="binary";
-		pruebaDescarga.dArchivo("http://pruebas.uanesi.net/descargaArchivo.php?archivo=APA.pdf",opciones);
-		
-		var opciones = new Object();
-		opciones.onCompletado = solicitudCompletada2;
-		opciones.onSend = antesEnvioSolicitud2;
-		opciones.onExito = exitoSolicitud2;
-		opciones.onProgreso = muestraProgreso2;
-		opciones.tipoResultado="binary";
-		opciones.id="2";
-		pruebaDescarga.dArchivo("http://pruebas.uanesi.net/pdf1115099130576dfc45a7f4a-1.jpg",opciones);
+	var opciones = new Object();
+	opciones.onCompletado = solicitudCompletada2;
+	opciones.onSend = antesEnvioSolicitud2;
+	opciones.onExito = exitoSolicitud2;
+	opciones.onProgreso = muestraProgreso2;
+	opciones.tipoResultado="text";
+	opciones.id = "1";
+	pruebaDescarga.dArchivo("http://pruebas.uanesi.net/libs/js8/prueba.js",opciones);
   }
 	function muestraProgreso2(evt,xhr){
 			//$("#progresoTXT"+xhr.opciones.id).html(xhr.opciones.url);
-			$("#progresoTXT"+xhr.opciones.id+"A").html(evt.lengthComputable+"<br>");
+			//$("#progresoTXT"+xhr.opciones.id+"A").html(evt.lengthComputable+"<br>");
+			$("#progresoTXT"+xhr.opciones.id+"A").html("Descargando")
 			if (evt.lengthComputable) {
 				var percentComplete = evt.loaded / evt.total;
 				$("#progresoTXT"+xhr.opciones.id).html(percentComplete+"<br>");
@@ -56,30 +48,26 @@ var pruebaDescarga
 		function antesEnvioSolicitud2(evt,opciones) {
 			console.log("antesEnvioSolicitud")
 			console.log(opciones.id);
-			$("#progresoTXTTest").html("antesEnvioSolicitud")
+			$("#progresoTXT"+opciones.id+"A").html("antesEnvioSolicitud")
 		}
 		function solicitudCompletada2(evt,state) {
 			console.log("solicitudCompletada");
 			console.log(evt.opciones.id)
-			$("#progresoTXTTest").html("solicitudCompletada");
+			$("#progresoTXT"+evt.opciones.id+"A").html("solicitudCompletada");
+			//$("#progresoTXTTest").html("solicitudCompletada");
 		}
 		function exitoSolicitud2(data, status, xhr) { 
 			if(data){
-				$("#progresoTXT"+xhr.opciones.id+"B").append("Objetivo: " + xhr.opciones.url + "<br>");
+				//$("#progresoTXT"+xhr.opciones.id+"B").append("Objetivo: " + xhr.opciones.url + "<br>");
+				$("#progresoTXT"+xhr.opciones.id+"A").html("Completado")
 				var nombreArchivo = pruebaDescarga.obtieneNombre(xhr);
 				$("#progresoTXT"+xhr.opciones.id+"B").append("Archivo: " + nombreArchivo + "<br>");
-				var downloadUrl = URL.createObjectURL(data);
-				if(xhr.opciones.id=="1"){
-					var a = document.createElement("a");
-					a.href = downloadUrl;
-					a.download = nombreArchivo;
-					document.body.appendChild(a);
-					a.click();
-				}else{
-					var a = document.createElement("img");
-					a.src = downloadUrl;
-					document.body.appendChild(a);
-				}
+				$("#progresoTXT"+xhr.opciones.id+"C").html(xhr.getAllResponseHeaders());
+				//console.log(data)
+				var script = document.createElement("script");
+				script.type="text/javascript";
+				script.innerHTML = data;
+				document.body.appendChild(script);
 			}
 			$("#progresoTXT"+xhr.opciones.id+"B").append("exitoSolicitud 2<br>");
 		}
@@ -89,12 +77,14 @@ var pruebaDescarga
 <br>
 <br>
 <br>
-<div id="progresoTXTTest" style="border:#000000 1px solid"></div>
+<div id="progresoTXTTest"></div>
 <div id="progresoTXT1" style="border:#000000 1px solid"></div>
 <div id="progresoTXT1A"></div>
 <div id="progresoTXT1B"></div>
+<div id="progresoTXT1C"></div>
 <div id="progresoTXT2" style="border:#000000 1px solid"></div>
 <div id="progresoTXT2A"></div>
 <div id="progresoTXT2B"></div>
+<div id="progresoTXT2C"></div>
 </body>
 </html>
