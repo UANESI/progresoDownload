@@ -25,13 +25,13 @@ opciones.onCompletado = solicitudCompletada2;
 opciones.onSend = antesEnvioSolicitud2;
 opciones.onExito = exitoSolicitud2;
 opciones.onProgreso = muestraProgreso2;
-opciones.tipoResultado="binary";
+opciones.tipoResultado="text";
 opciones.id = "1";
 opciones.metodo = "POST";
 var datos = new Object();
 datos.archivos = "libs/libs/css8/blitzer/jquery-ui-1.10.4.custom.css|libs/css8/metro.min.css|libs/css8/metro-colors.min.css|libs/css8/metro-icons.min.css|libs/css8/metro-schemes.min.css|libs/css8/autoComplete.css|libs/css8/datetimepicker/jquery.datetimepicker.css|libs/css8/cleditor/jquery.cleditor.css|libs/js8/select2/css/select2.min.css|libs/js8/jquery-2.1.0.min.js|libs/js8/jquery-ui-1.10.4.custom.min.js|libs/js8/min.metroBeta2.js|libs/js8/paramBas.js|libs/js8/include.js|libs/js8/moment.min.js|libs/js8/cleditor/jquery.cleditor.js|libs/js8/datetimepicker/jquery.datetimepicker.js|libs/js8/plupload/plupload.full.min.js|libs/js8/select2/js/select2.full.min.js|libs/js8/JsZip/zip-min.js";
 opciones.contenidos = datos;
-pruebaDescarga.dArchivo("http://pruebas.uanesi.net/obtieneArchivos.php",opciones);
+pruebaDescarga.dArchivo("http://pruebas.uanesi.net/obtieneArchivosTXT.php",opciones);
 }
 function muestraProgreso2(evt,xhr){
 	//$("#progresoTXT"+xhr.opciones.id).html(xhr.opciones.url);

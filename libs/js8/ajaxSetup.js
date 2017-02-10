@@ -18,7 +18,7 @@
 						url = options.url,
 						type = options.type,
 						async = options.async || true,
-						dataType = options.responseType,
+						dataType = options.responseType || "blob",
 						data = options.data || null,
 						username = options.username || null,
 						password = options.password || null;
@@ -36,6 +36,8 @@
 						});
 						xhr.addEventListener('load', function(){
 							var data = {};
+							
+							
 							data[options.dataType] = xhr.response;
 							callback(xhr.status, xhr.statusText, data, xhr.getAllResponseHeaders());
 						});
@@ -133,7 +135,7 @@
 					return true;
 				}
 			};
-		}); 
+		});
    downQuery =  {
 	   defaultOptions:{
 

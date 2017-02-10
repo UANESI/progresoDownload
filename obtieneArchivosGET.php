@@ -23,7 +23,7 @@ echo base64_encode($contenido);
 */
 
 require_once("clase/zip.lib.php");
-$archivos = explode("|",$_POST["archivos"]);
+$archivos = explode("|",$_GET["archivos"]);
 $ziper = new zipfile();
 for($n=0;$n<count($archivos);$n++){
 	ob_start();
