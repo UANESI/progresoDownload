@@ -1,2 +1,2 @@
-console.log(1)
-console.log("Funciona 1")
+alert(1)
+alert("Funciona 1")
